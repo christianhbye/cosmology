@@ -26,10 +26,11 @@ def dm(dL):
 if __name__ == "__main__":
     z, mu, sig = np.loadtxt("hstsn.data", skiprows=5, usecols=(1, 2, 3)).T
     omegas = [[0.27, 0.73], [0.27, 0.0], [1.0, 0.0]]
-    z_grid = np.linspace(1e-3, 1.2 * z.max(), num=200)
-    plt.figure()
+    z_grid = np.linspace(0.8*z.min(), 1.2 * z.max(), num=200)
+    plt.figure(figsize=(6,3))
     plt.xlabel("$z$")
     plt.ylabel("$\\mu$")
+    plt.xlim(z_grid.min(), z_grid.max())
     for i in range(len(omegas)):
         om_m, om_l = omegas[i]
         dms = dm(lum_dist(z_grid, om_m, om_l))
@@ -37,7 +38,7 @@ if __name__ == "__main__":
         label += f"({om_m:.2f}, {om_l:.2f})"
         plt.plot(z_grid, dms, label=label)
     plt.legend()
-    plt.savefig("2a.eps")
+    plt.savefig("2a.eps", bbox_inches="tight")
 
     plt.errorbar(
         z,
@@ -49,4 +50,4 @@ if __name__ == "__main__":
         c="k",
     )
     plt.legend()
-    plt.savefig("2b.eps")
+    plt.savefig("2b.eps", bbox_inches="tight")
