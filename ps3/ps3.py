@@ -13,7 +13,7 @@ def lum_dist(z, om_m, om_l, h=0.7):
     H0 = 100 * h  # in km/Mpc/s
     q0 = om_m / 2 - om_l  # deceleration parameter
     r = c / H0 * (z - (1 + q0) * z**2 / 2)  # small-z approximation
-    return r
+    return r * (1 + z)  # lum dist is related to comoving by (1+z)
 
 
 def dm(dL):
@@ -26,8 +26,8 @@ def dm(dL):
 if __name__ == "__main__":
     z, mu, sig = np.loadtxt("hstsn.data", skiprows=5, usecols=(1, 2, 3)).T
     omegas = [[0.27, 0.73], [0.27, 0.0], [1.0, 0.0]]
-    z_grid = np.linspace(0.8*z.min(), 1.2 * z.max(), num=200)
-    plt.figure(figsize=(6,3))
+    z_grid = np.linspace(0.8 * z.min(), 1.2 * z.max(), num=200)
+    plt.figure(figsize=(6., 3.))
     plt.xlabel("$z$")
     plt.ylabel("$\\mu$")
     plt.xlim(z_grid.min(), z_grid.max())
