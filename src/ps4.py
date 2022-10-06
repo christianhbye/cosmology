@@ -15,31 +15,29 @@ def t0_flat(omega_m, h):
     return t
 
 
-ekte = t0_flat(0.3, 7.2e-4)
-print(ekte)
+if __name__=="__main__":
+    HW_DIR = "../ps4/"
 
-HW_DIR = "../ps4/"
+    # t0 always scales with 1/h so if we set h=1, we effectively get 1/h units
+    omega_m = np.linspace(1e-6, 3, num=100)
+    omega_m.sort()
+    age = np.empty_like(omega_m)
+    for i, om0 in enumerate(omega_m):
+        age[i] = t0_matter(om0, 1)  # age of universe
 
-# t0 always scales with 1/h so if we set h=1, we effectively get 1/h units
-omega_m = np.linspace(0.1, 3, num=100)
-omega_0 = omega_m  # omega_lambda = 0
-age = np.empty_like(omega_0)
-for i, om0 in enumerate(omega_0):
-    age[i] = t0_matter(om0, 1)  # age of universe
+    # 1a
+    plt.figure()
+    plt.plot(omega_m, age, label="$\\Omega_{0, \\Lambda}=0$")
+    plt.xlabel("$\Omega_{0, m}$")
+    plt.ylabel("$t_0 [h^{-1} \mathrm{Gyr}]$")
+    plt.xlim(omega_m.min(), omega_m.max())
+    plt.legend()
+    plt.grid()
+    plt.savefig(HW_DIR + "q1a.eps", bbox_inches="tight")
 
-# 1a
-plt.figure()
-plt.plot(omega_m, age, label="$\\Omega_{0, \\Lambda}=0$")
-plt.xlabel("$\Omega_{0, m}$")
-plt.ylabel("$t_0 [h^{-1} \mathrm{Gyr}]$")
-plt.xlim(omega_0.min(), omega_0.max())
-plt.legend()
-plt.savefig(HW_DIR + "q1a.eps", bbox_inches="tight")
-
-# 1b
-omega_m = np.linspace(0, 1, num=100)
-age = t0_flat(omega_m, 1)
-plt.plot(omega_m, age, label="$\\Omega_{0, \\Lambda}=1-\\Omega_{0, m} $")
-plt.legend()
-plt.savefig(HW_DIR + "q1b.eps", bbox_inches="tight")
-
+    # 1b
+    omega_m = np.linspace(1e-6, 1, num=100)
+    age = t0_flat(omega_m, 1)
+    plt.plot(omega_m, age, label="$\\Omega_{0, \\Lambda}=1-\\Omega_{0, m} $")
+    plt.legend()
+    plt.savefig(HW_DIR + "q1b.eps", bbox_inches="tight")
