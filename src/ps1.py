@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def omega(a, omega_m, omega_lam, omega_r):
     """
     Density parameter vs scale factor as a function of the present values of
@@ -11,10 +12,11 @@ def omega(a, omega_m, omega_lam, omega_r):
     x /= 1 - omega_0 + omega_lam * a**2 + omega_m / a + omega_r / a**2
     return 1 - x
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     print("Values at a = 1e-3 (matter dominated)")
-    om_m = [0.32, 0.32, 1., 5.]
-    om_l = [0., 0.68, 0., 0.]
+    om_m = [0.32, 0.32, 1.0, 5.0]
+    om_l = [0.0, 0.68, 0.0, 0.0]
     a = np.geomspace(1e-3, 1, num=500)
     ls = ["-", "-", "--", "-"]
     plt.figure()
