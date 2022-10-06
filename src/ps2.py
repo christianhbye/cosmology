@@ -48,7 +48,7 @@ def t0(Omega0, h):
     else:  # open
         x0 = np.arccosh(y)
 
-    t0, a0 = a(x0, Omega0, H0)
+    t0, a0 = a(x0, Omega0, h)
     assert np.isclose(a0, 1)  # check that we indeed found the right t0
     return t0
 
