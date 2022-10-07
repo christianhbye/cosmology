@@ -58,13 +58,32 @@ if __name__=="__main__":
     # convert H0 from 1/Gyr to km/s/Mpc
     H0_vals /= 1e9 * 3.154e7  # 1/Gyr -> 1/s
     H0_vals *= 3.086e19  # convert to km/Mpc
+
+    # H0 for matter dominated universe with t0 >11.5 Gyr
+    H0_max_matter = 2 / (3*11.5)
+    H0_max_matter /= 1e9 * 3.154e7
+    H0_max_matter *= 3.086e19
+    print(H0_max_matter)
+
     plt.figure()
     for i in range(len(t0_vals)):
         plt.plot(omega_m, H0_vals[i], label=f"$t_0 = {t0_vals[i]:.1f}$ Gyr") 
+    plt.axhline(70, ls="--", c="k")
+    plt.fill_between(
+        omega_m, H0_vals[0], color="lightsteelblue", label="$t_0 \geq 11$ Gyr"
+    )
+    plt.fill_between(
+        omega_m,
+        67,
+        73,
+        color="lightpink",
+        label="$H_0 = (70 \pm 3) \mathrm{km s^{-1} Mpc^{-1}}$",
+    )
     plt.xlabel("$\Omega_{0, m}$")
     plt.ylabel("$H_0 [\mathrm{km s}^{-1} \mathrm{Mpc}^{-1}]$")
     plt.legend()
     plt.grid()
-    plt.xlim(omega_m.min(), omega_m.max())
-    plt.yscale("log")
+    plt.xlim(0, 1)
+    plt.ylim(0, 300)
+    plt.yticks([0, 70, 100, 200, 300])
     plt.savefig(HW_DIR + "q1c.eps", bbox_inches="tight")
