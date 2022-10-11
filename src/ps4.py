@@ -24,6 +24,28 @@ def H0_flat(omega_m, t0):
     H0 = 100 * h
     return H0
 
+def t_vs_z(z, omega_m, omega_lambda, h=7.2e-4):
+    """
+    Compute time corresponding to redshift z.
+    """
+    H0 = 100 * h
+    a = 1 / (1 + z)
+    if omega_m == 1:  # flat, matter dominated
+        return 2 / (3 * H0) * a ** (3/2)
+    elif omega_lambda + omega_m == 1:  # flat with lambda
+        u = np.sqrt(omega_m / a**3 + omega_lambda)
+        log_arg = u + np.sqrt(omega_lambda)
+        log_arg /= u - np.sqrt(omega_lambda)
+        return np.log(log_arg) / (3 * H0 * np.sqrt(omega_lambda))
+    elif omega_lambda == 0 and omega_m < 1:  # open, matter dominated
+        coshx = 1 + 2 * a * (1 - omega_m) / omega_m
+        sinhx = np.sqrt(coshx ** 2 - 1)
+        x = np.arccosh(coshx)
+        t = 1 / (2 * H0) * omega_m / (1-omega_m)**(3/2) * (sinhx - x)
+        return t
+    else:
+        raise NotImplementedError
+
 
 if __name__=="__main__":
     HW_DIR = "../ps4/"
@@ -87,3 +109,54 @@ if __name__=="__main__":
     plt.ylim(0, 300)
     plt.yticks([0, 70, 100, 200, 300])
     plt.savefig(HW_DIR + "q1c.eps", bbox_inches="tight")
+
+    # 2
+    z_cmb = 1100
+    z_gal = 13
+    om_ms = [0.32, 0.32, 1.]
+    om_ls = [0.68, 0., 0.]
+    for z in [z_cmb, z_gal]:
+        for i in range(3):
+            om = om_ms[i]
+            ol = om_ls[i]
+            print(om, ol, z)
+            print(t_vs_z(z, om, ol))
+
+
+    # 3
+    def flat_th(z, L=20):
+        y = 1.2e-3 * (1+z)
+        y /= 2 - 2/np.sqrt(1+z)
+        return y * L
+
+    def integral(z, omega_m):
+        a = np.sqrt(np.abs(omega_m - 1))
+        y = 2 / a
+        u = np.sqrt(omega_m * (1+z) + (1-omega_m))
+        y *= np.arctan2(u, a) - np.arctan2(1, a)
+        return y
+
+    def open_th(z, om_m=0.3, L=20):
+        y = 1.2e-3 * (1+z) * np.sqrt(1-om_m) * L
+        x = np.sqrt(1-om_m) * integral(z, om_m)
+        y /= np.sinh(x)
+        return y
+    
+    def closed_th(z, om_m=3., L=20):
+        y = 1.2e-3 * (1+z) * np.sqrt(om_m-1) * L
+        x = np.sqrt(om_m-1) * integral(z, om_m)
+        y /= np.sin(x)
+        return y
+
+    z = np.geomspace(1e-2, 10)
+
+    plt.figure()
+    plt.plot(z, flat_th(z), label="$\Omega_{0, m}=1$")
+    plt.plot(z, open_th(z), label="$\Omega_{0, m}=0.3$")
+    plt.plot(z, closed_th(z), label="$\Omega_{0, m}=3.$")
+    plt.xlabel("$z$")
+    plt.ylabel("$\\theta$ [h arcsec]")
+    plt.yscale("log")
+    plt.xscale("log")
+    plt.legend()
+    plt.savefig("q3b.eps", bbox_inches="tight")
