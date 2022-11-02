@@ -4,6 +4,7 @@ from scipy.integrate import quad
 
 c = 299792.458  # km/s
 
+
 def ld_flat_matter(z, h=0.7):
     """
     Luminosity distance for a flat, matter dominated universe
@@ -11,6 +12,7 @@ def ld_flat_matter(z, h=0.7):
     H0 = 100 * h
     sq = np.sqrt(1 + z)
     return 2 * c / H0 * sq * (sq - 1)
+
 
 def ld_open_matter(z, om_m, h=0.7):
     """
@@ -22,12 +24,14 @@ def ld_open_matter(z, om_m, h=0.7):
     frac = (sq - 1) / (sq + 1)
     return (1 + z) * c / (H0 * np.sqrt(om_k)) * frac
 
+
 def ld_flat_int(z, om_m, h=0.7):
     """
     Integrand for comoving distance of flat universe with Lambda
     """
     om_l = 1 - om_m
-    return 1 / np.sqrt(om_m * (1 + z)**3 + om_l)
+    return 1 / np.sqrt(om_m * (1 + z) ** 3 + om_l)
+
 
 def ld_flat_lambda(z, om_m, h=0.7):
     """
