@@ -2,28 +2,33 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import quad
 
+
 def theta(a, omega0):
     a = np.array(a).reshape(-1, 1)
     omega0 = np.array(omega0).reshape(1, -1)
-    x = 1 + 2 * a * (1-omega0) / omega0
+    x = 1 + 2 * a * (1 - omega0) / omega0
     return np.arccosh(x)
+
 
 def delta_prop(theta):
     """
     Function of theta that delta is proportional to
     """
     d = 3 * np.sinh(theta) * (np.sinh(theta) - theta)
-    d /= (np.cosh(theta) - 1)**2
+    d /= (np.cosh(theta) - 1) ** 2
     return d - 2
+
 
 def open_delta(theta, theta_ref):
     return 1e-3 * delta_prop(theta) / delta_prop(theta_ref)
+
 
 def integrand(a, omega_m, omega_l):
     """
     Function to integrate in Eq 46
     """
-    return (omega_m / a + a **2 * omega_l)**(-3/2)
+    return (omega_m / a + a**2 * omega_l) ** (-3 / 2)
+
 
 def f(a, omega_m):
     """
@@ -34,7 +39,8 @@ def f(a, omega_m):
     integral = np.empty_like(a)
     for i in range(a.size):
         integral[i] = quad(integrand, 0, a[i], args=(omega_m, omega_l))[0]
-    return np.sqrt(omega_m/a**3 + omega_l) * integral
+    return np.sqrt(omega_m / a**3 + omega_l) * integral
+
 
 def delta_lambda(a, omega_m):
     deltas = np.empty((omega_m.size, a.size))
@@ -44,9 +50,10 @@ def delta_lambda(a, omega_m):
         deltas[i] = 1e-3 * f(a, om_m) / f_ref
     return deltas
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     a = np.geomspace(1e-3, 1, num=100)
-    om_open = np.array([1e-2, .1, .3])[::-1]
+    om_open = np.array([1e-2, 0.1, 0.3])[::-1]
     th = theta(a, om_open)
     th_ref = th[0]  # at a = 1e-3
     deltas = open_delta(th, th_ref)
